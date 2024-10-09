@@ -1,7 +1,23 @@
 import java.util.Scanner;
 
 public class main {
-	//codigo que inicializa a cada ejemplo
+	// Método para limpiar la consola
+    private static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                // Comando para limpiar consola en Windows
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                // Comando para limpiar consola en Linux/Mac
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception e) {
+            System.out.println("Error al intentar limpiar la consola.");
+        }
+    }
+
+    // Código que inicializa cada ejemplo
     private static void command() {
     	Cookie cookie = new Cookie();
         Server server = new Server();
@@ -9,49 +25,60 @@ public class main {
 
         server.setCommand(GenCookieCommand);
         server.runGenCookie();
-    };
+        System.out.println("Presiona Enter para continuar...");
+        new Scanner(System.in).nextLine(); // Espera a que el usuario presione Enter
+    }
     
     private static void iterator() {
-    	
-    };
+        iCookieCollection iCookieCollection = new iCookieCollection(3);
+        
+        iCookieCollection.addiCookie(new iCookie("Chocolate"));
+        iCookieCollection.addiCookie(new iCookie("Vainilla"));
+        iCookieCollection.addiCookie(new iCookie("Fresa"));
+    
+        Iterator iterator = iCookieCollection.createIterator();
+        
+        while (iterator.hasNext()) {
+            iCookie icookie = (iCookie) iterator.next();
+            System.out.println(icookie);
+        }
+        System.out.println("Presiona Enter para continuar...");
+        new Scanner(System.in).nextLine(); // Espera a que el usuario presione Enter
+    }
     
     private static void interpreter() {
-
-        //Crea clase Scanner con input como parametro
         Scanner scannerNumeros = new Scanner(System.in);
 
         int numero1 = 0;
         int numero2 = 0;
 
-        // Usuario inserta 1er numero
         try {
-            System.out.print("Digita el 1er número (entero): ");
+            System.out.print("\nDigita el 1er número (entero): ");
             numero1 = scannerNumeros.nextInt();
         } catch (Exception e) {
             System.out.println("Error: Debe ingresar un número entero.");
-            return; // Sale para volver a empezar debido a valor no valido
+            return;
         }
 
-        // Usuario inserta 2do  numero
         try {
             System.out.print("Digita el 2do número (entero): ");
             numero2 = scannerNumeros.nextInt();
         } catch (Exception e) {
             System.out.println("Error: Debe ingresar un número entero.");
-            return; // Sale para volver a empezar debido a valor no valido
+            return;
         }
 
         Expresion expresionNumero1 = new NumeroExpresion(numero1);
         Expresion expresionNumero2 = new NumeroExpresion(numero2);
 
-        // Creamos la expresión de suma
         Expresion sumarExpresion = new SumarExpresion(expresionNumero1, expresionNumero2);
 
-        // Interpretamos la expresión y mostramos el resultado
         int result = sumarExpresion.interpret();
         System.out.println("El resultado es: " + result);
-
-    };
+        
+        System.out.println("\nPresiona Enter para continuar...");
+        new Scanner(System.in).nextLine(); // Espera a que el usuario presione Enter
+    }
 
     private static int validateInput(Scanner scanner) {
     	int choice = -1;
@@ -59,12 +86,11 @@ public class main {
         
         while (!validInput) {
             try {
-                //parse el ingreso del usuario para probar si es int o no
             	choice = Integer.parseInt(scanner.nextLine());
                 validInput = true;
             } catch (NumberFormatException e) {
-                System.out.print("Ingreso invalido");
-                System.out.print("Ingrese el numero de la opcion que desea correr: ");
+                System.out.print("Ingreso invalido. ");
+                System.out.print("Ingrese el número de la opción que desea correr: ");
             }
         }
         
@@ -86,11 +112,11 @@ public class main {
             return false;
             
         case 4:
-            System.out.println("Cerrando programa");
+            System.out.println("Cerrando programa.");
             return true;
 
         default:
-            System.out.println("Ingreso invalido, por favoir ingrese una de las opciones.");
+            System.out.println("Ingreso inválido, por favor ingrese una de las opciones.");
             return false;
     	}
     }
@@ -100,19 +126,16 @@ public class main {
         boolean exit = false;
         
         while (!exit) {
-            System.out.println("Menu:");
+            clearConsole();  // Limpiar la consola antes de mostrar el menú
+            System.out.println("Menú:\n");
             System.out.println("1. Command");
             System.out.println("2. Iterator");
             System.out.println("3. Interpreter");
-            System.out.println("4. Exit");
-            System.out.print("Ingrese el numero de la opcion que desea correr: ");
+            System.out.println("4. Salir\n");
+            System.out.print("Ingrese el número de la opción que desea correr:");
 
-            int choice = -1;
-            //validateInput toma el ingreso del usuario, lo valida y lo devleuve
-            choice = validateInput(scanner);
+            int choice = validateInput(scanner);
             
-            //selector devuelve false en case de elegir uno de los ejemplos o un ingreso invalido
-            //devuelve true en caso de que el usuario quiera salir
             exit = selector(choice);
         }
 
